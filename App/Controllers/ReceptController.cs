@@ -1,17 +1,15 @@
 ﻿using App.Data;
 using App.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Controllers
 {
-
     /// <summary>
-    /// Namjenjeno za CRUD operacije nad entitetom autor u bazi
+    /// Namjenjeno za CRUD operacije nad entitetom recept u bazi
     /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class AutorController: ControllerBase
+    public class ReceptController: ControllerBase
     {
         /// <summary>
         /// Kontest za rad s bazom koji će biti postavljen s pomoću Dependecy Injection-om
@@ -23,21 +21,21 @@ namespace App.Controllers
         /// pomoću DI principa
         /// </summary>
         /// <param name="context"></param>
-        public AutorController(KuharicaContext context)
+        public ReceptController(KuharicaContext context)
         {
             _context = context;
         }
 
         /// <summary>
-        /// Dohvaća sve autore iz baze
+        /// Dohvaća sve recepte iz baze
         /// </summary>
         /// <remarks>
         /// Primjer upita
         /// 
-        ///    GET api/v1/Autor
+        ///    GET api/v1/Recept
         ///    
         /// </remarks>
-        /// <returns>Autori u bazi</returns>
+        /// <returns>Recepti u bazi</returns>
         /// <response code="200">Sve OK, ako nema podataka content-length: 0 </response>
         /// <response code="400">Zahtjev nije valjan</response>
         /// <response code="503">Baza na koju se spajam nije dostupna</response>
@@ -51,12 +49,12 @@ namespace App.Controllers
             }
             try
             {
-                var autori = _context.Autori.ToList();
-                if (autori == null || autori.Count == 0)
+                var recepti = _context.Recepti.ToList();
+                if (recepti == null || recepti.Count == 0)
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(autori);
+                return new JsonResult(recepti);
             }
             catch (Exception ex)
             {
@@ -66,29 +64,29 @@ namespace App.Controllers
         }
 
         /// <summary>
-        /// Dodaje novog autora u bazu
+        /// Dodaje novog recepta u bazu
         /// </summary>
         /// <remarks>
-        ///     POST api/v1/Autor
+        ///     POST api/v1/Recept
         ///     {naziv: "Primjer naziva"}
         /// </remarks>
-        /// <param name="autor">Autor za unijeti u JSON formatu</param>
+        /// <param name="recept">Recept za unijeti u JSON formatu</param>
         /// <response code="201">Kreirano</response>
         /// <response code="400">Zahtjev nije valjan (BadRequest)</response> 
         /// <response code="503">Baza nedostupna iz razno raznih razloga</response> 
-        /// <returns>Smjer s šifrom koju je dala baza</returns>
+        /// <returns>Recept s šifrom koju je dala baza</returns>
         [HttpPost]
-        public IActionResult Post(Autor autor)
+        public IActionResult Post(Recept recept)
         {
-            if (!ModelState.IsValid || autor == null)
+            if (!ModelState.IsValid || recept == null)
             {
                 return BadRequest();
             }
             try
             {
-                _context.Autori.Add(autor);
+                _context.Recepti.Add(recept);
                 _context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created, autor);
+                return StatusCode(StatusCodes.Status201Created, recept);
             }
             catch (Exception ex)
             {
@@ -98,35 +96,33 @@ namespace App.Controllers
         }
 
         /// <summary>
-        /// Mijenja podatke postojećeg autora u bazi
+        /// Mijenja podatke postojećeg recepta u bazi
         /// </summary>
         /// <remarks>
         /// Primjer upita:
         ///
-        ///    PUT api/v1/autor/1
+        ///    PUT api/v1/recept/1
         ///
         /// {
         ///  "sifra": 0,
-        ///  "ime": "Novo Ime",
-        ///  "prezime": "Novo Prezime",
-        ///  "email": " Novi Email",
-        ///  "mjesto": " Novo Mjesto",
-        ///  "drzava":" Nova Drzava"
+        ///  "naziv": "Novoi Naziv",
+        ///  "autor": "Novoi Autor",
+        ///  "opis": " Novi Opis",
         /// }
         ///
         /// </remarks>
-        /// <param name="sifra">Šifra autora koji se mijenja</param>  
-        /// <param name="autor">Autor za unijeti u JSON formatu</param>  
-        /// <returns>Svi poslani podaci od autora koji su spremljeni u bazi</returns>
+        /// <param name="sifra">Šifra recepta koji se mijenja</param>  
+        /// <param name="recept">Recept za unijeti u JSON formatu</param>  
+        /// <returns>Svi poslani podaci od recepta koji su spremljeni u bazi</returns>
         /// <response code="200">Sve je u redu</response>
-        /// <response code="204">Nema u bazi autora kojeg želimo promijeniti</response>
+        /// <response code="204">Nema u bazi recepta kojeg želimo promijeniti</response>
         /// <response code="415">Nismo poslali JSON</response> 
         /// <response code="503">Baza nedostupna</response> 
         [HttpPut]
         [Route("{sifra:int}")]
-        public IActionResult Put(int sifra, Autor autor)
+        public IActionResult Put(int sifra, Recept recept)
         {
-            if (sifra <= 0 || !ModelState.IsValid || autor == null)
+            if (sifra <= 0 || !ModelState.IsValid || recept == null)
             {
                 return BadRequest();
             }
@@ -134,9 +130,9 @@ namespace App.Controllers
             {
 
 
-                var autorIzBaze = _context.Autori.Find(sifra);
+                var receptIzBase = _context.Recepti.Find(sifra);
 
-                if (autorIzBaze == null)
+                if (receptIzBase == null)
                 {
                     return StatusCode(StatusCodes.Status204NoContent, sifra);
                 }
@@ -144,16 +140,15 @@ namespace App.Controllers
 
                 // inače ovo rade mapperi
                 // za sada ručno
-                autorIzBaze.Ime = autor.Ime;
-                autorIzBaze.Prezime = autor.Prezime;
-                autorIzBaze.Email = autor.Email;
-                autorIzBaze.Mjesto = autor.Mjesto;
-                autorIzBaze.Drzava = autor.Drzava;
+               receptIzBase.Naziv = recept.Naziv;
+               receptIzBase.Autor = recept.Autor;
+                receptIzBase.Opis = recept.Opis;
+                
 
-                _context.Autori.Update(autorIzBaze);
+                _context.Recepti.Update(receptIzBase);
                 _context.SaveChanges();
 
-                return StatusCode(StatusCodes.Status200OK, autorIzBaze);
+                return StatusCode(StatusCodes.Status200OK, receptIzBase);
             }
             catch (Exception ex)
             {
@@ -164,18 +159,18 @@ namespace App.Controllers
         }
 
         /// <summary>
-        /// Briše autora iz baze
+        /// Briše recept iz baze
         /// </summary>
         /// <remarks>
         /// Primjer upita:
         ///
-        ///    DELETE api/v1/autor/1
+        ///    DELETE api/v1/recept/1
         ///    
         /// </remarks>
-        /// <param name="sifra">Šifra autora koji se briše</param>  
+        /// <param name="sifra">Šifra recepta koji se briše</param>  
         /// <returns>Odgovor da li je obrisano ili ne</returns>
         /// <response code="200">Sve je u redu, obrisano je u bazi</response>
-        /// <response code="204">Nema u bazi autora kojeg želimo obrisati</response>
+        /// <response code="204">Nema u bazi recepta kojeg želimo obrisati</response>
         /// <response code="503">Problem s bazom</response> 
         [HttpDelete]
         [Route("{sifra:int}")]
@@ -189,14 +184,14 @@ namespace App.Controllers
 
             try
             {
-                var autorIzBase = _context.Autori.Find(sifra);
+                var receptiIzBase = _context.Recepti.Find(sifra);
 
-                if (autorIzBase == null)
+                if (receptiIzBase == null)
                 {
                     return StatusCode(StatusCodes.Status204NoContent, sifra);
                 }
 
-                _context.Autori.Remove(autorIzBase);
+                _context.Recepti.Remove(receptiIzBase);
                 _context.SaveChanges();
 
                 return new JsonResult("{\"poruka\": \"Obrisano\"}"); // ovo nije baš najbolja praksa ali da znake kako i to može

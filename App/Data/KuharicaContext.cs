@@ -22,6 +22,11 @@ namespace App.Data
         /// Autori u bazi
         /// </summary>
         public DbSet<Autor> Autori { get; set; }
+
+        /// <summary>
+        /// Recepti u bazi
+        /// </summary>
+        public DbSet<Recept> Recepti { get; set; }
      
 
     }
