@@ -1,13 +1,13 @@
-import { Container, Table } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
-export default function AutoriPromjeni(){
+export default function AutoriDodaj(){
 
 
-    return (
+ return(
 
-        <Container>
-           Mjenjanje autora
-        </Container>
+    <Container>
+        Dodavanje autora
+    </Container>
 
     );
 
