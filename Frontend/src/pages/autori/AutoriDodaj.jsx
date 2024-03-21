@@ -1,6 +1,6 @@
 import { Container, Table } from "react-bootstrap";
 
-export default function AutoriiDodaj(){
+export default function AutoriDodaj(){
 
 
     return (
