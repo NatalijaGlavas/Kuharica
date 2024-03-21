@@ -16,7 +16,7 @@ function App() {
         <>
           <Route path={RoutesNames.HOME} element={<Pocetna />} />
           <Route path={RoutesNames.AUTORI_PREGLED} element={<Autori />} />
-          <Route path={RoutesNames.AUTORI_NOVI_NOVI} element={<AutoriDodaj />} />
+          <Route path={RoutesNames.AUTORI_NOVI} element={<AutoriDodaj />} />
         </>
       </Routes>
     </>
