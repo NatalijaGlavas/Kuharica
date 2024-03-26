@@ -1,16 +1,16 @@
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
-import AutorSrvice from "../../services/AutorService";
+import ReceptSrvice from "../../services/ReceptService";
 
-export default function AutoriDodaj(){
+export default function ReceptiDodaj(){
     const navigate = useNavigate();
 
 
-    async function dodajAutora(autor){
-        const odgovor = await AutorSrvice.dodajAutora(autor);
+    async function dodajRecept(recept){
+        const odgovor = await ReceptSrvice.dodajRecept(recept);
         if(odgovor.ok){
-          navigate(RoutesNames.AUTORI_PREGLED);
+          navigate(RoutesNames.RECEPTI_PREGLED);
         }else{
           console.log(odgovor);
           alert(odgovor.poruka);
@@ -22,17 +22,16 @@ export default function AutoriDodaj(){
         const podaci = new FormData(e.target);
         //console.log(podaci.get('naziv'));
 
-        const autor = 
+        const recept = 
         {
-            ime: podaci.get('ime'),
-            prezime: podaci.get('prezime'),
-            email: podaci.get('email'),
-            mjesto: podaci.get('mjesto'),
-            drzava: podaci.get('drzava')
+            naziv: podaci.get('ime'),
+            autor: podaci.get('prezime'),
+            opis: podaci.get('email')
+           
           };
 
           //console.log(JSON.stringify(autor));
-          dodajAutora(autor);
+          dodajRecept(recept);
 
 
     }
@@ -43,57 +42,43 @@ export default function AutoriDodaj(){
            
            <Form onSubmit={handleSubmit}>
 
-                <Form.Group controlId="ime">
-                    <Form.Label>Ime</Form.Label>
+                <Form.Group controlId="naziv">
+                    <Form.Label>Naziv</Form.Label>
                     <Form.Control 
                         type="text"
-                        name="ime"
+                        name="naziv"
                     />
                 </Form.Group>
 
-                <Form.Group controlId="prezime">
-                    <Form.Label>Trajanje</Form.Label>
+                <Form.Group controlId="autor">
+                    <Form.Label>Autor</Form.Label>
                     <Form.Control 
                         type="text"
-                        name="prezime"
+                        name="autor"
                     />
                 </Form.Group>
 
-                <Form.Group controlId="email">
-                    <Form.Label>Cijena</Form.Label>
+                <Form.Group controlId="opis">
+                    <Form.Label>Opis</Form.Label>
                     <Form.Control 
                         type="text"
-                        name="email"
+                        name="opis"
                     />
                 </Form.Group>
 
-                <Form.Group controlId="mjesto">
-                    <Form.Label>Upisnina</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="mjesto"
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="drzava">
-                    <Form.Check 
-                        label="text"
-                        name="drzava"
-                    />
-                </Form.Group>
 
                 <Row className="akcije">
                     <Col>
                         <Link 
                         className="btn btn-danger"
-                        to={RoutesNames.AUTOR_PREGLED}>Odustani</Link>
+                        to={RoutesNames.RECEPTI_PREGLED}>Odustani</Link>
                     </Col>
                     <Col>
                         <Button
                             variant="primary"
                             type="submit"
                         >
-                            Dodaj autora
+                            Dodaj recept
                         </Button>
                     </Col>
                 </Row>
