@@ -1,0 +1,20 @@
+export const RoutesNames = {
+    HOME: '/',
+   AUTORI_PREGLED: '/autori',
+    AUTORI_NOVI: '/autori/dodaj',
+    AUTORI_PROMJENI: '/autori/:sifra',
+
+   
+
+
+    RECEPTI_PREGLED: '/recepti',
+    RECEPTI_NOVI: '/recepti/dodaj',
+    RECEPTI_PROMJENI: '/recepti/:sifra',
+
+    
+};
+
+export const App = {
+    URL: 'https://edunova.runasp.net',
+    DEV: false
+};
