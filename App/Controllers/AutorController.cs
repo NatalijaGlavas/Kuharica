@@ -65,6 +65,31 @@ namespace App.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{sifra:int}")]
+        public IActionResult GetBySifra(int sifra)
+        {
+            // kontrola ukoliko upit nije valjan
+            if (!ModelState.IsValid || sifra <= 0)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var autor = _context.Autori.Find(sifra);
+                if (autor == null)
+                {
+                    return BadRequest("Autor s šifrom " + sifra + " ne postoji");
+                }
+                return new JsonResult(autor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    ex.Message);
+            }
+        }
+
         /// <summary>
         /// Dodaje novog autora u bazu
         /// </summary>

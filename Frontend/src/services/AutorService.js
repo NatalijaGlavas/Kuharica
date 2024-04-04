@@ -1,56 +1,82 @@
-import  { httpService, obradiGresku, obradiUspjeh } from "./httpService";
+import { App } from "../constants"
+import { httpService } from "./httpService";
 
-async function getAutori(){
-    return await httpService.get('/Autor')
-        .then((res)=>{
-            return obradiUspjeh(res);
-        }).catch((e)=>{
-            return obradiGresku(e);
-        });
+const naziv = 'Autor';
+
+async function get(){
+    return await httpService.get('/' + naziv)
+    .then((res)=>{
+        if(App.DEV) console.table(res.data);
+
+        return res;
+    }).catch((e)=>{
+        console.log(e);
+    });
 }
 
-async function obrisiAutora(sifra){
-    return await httpService.delete('/Autor/' + sifra)
-        .then((res)=>{
-            return obradiUspjeh(res);
-        }).catch((e)=>{
-            return obradiGresku(e);
-        });
-}
 
-async function dodajAutora(autor){
-    return await httpService.post('/Autor',autor)
-        .then((res)=>{
-            return obradiUspjeh(res);
-        }).catch((e)=>{
-            return obradiGresku(e);
-        });
-}
+async function obrisi(sifra) {
+    const odgovor = await httpService
+      .delete('/' + naziv + '/' + sifra)
+      .then(() => {
+        return { ok: true, poruka: 'Obrisao uspješno' };
+      })
+      .catch((e) => {
+        console.log(e);
+        return { ok: false, poruka: e.response.data };
+      });
+  
+    return odgovor;
+  }
 
-async function promjeniAutora(sifra,autor){
-    return await httpService.put('/Autor/'+sifra,autor)
-        .then((res)=>{
-            return obradiUspjeh(res);
-        }).catch((e)=>{
-            return obradiGresku(e);
-        });
-}
 
-async function getBySifra(sifra){
-    return await httpService.get('/Autor/' + sifra)
-        .then((res)=>{
-            return obradiUspjeh(res);
-        }).catch((e)=>{
-            return obradiGresku(e);
-        });
-}
 
+  async function dodaj(entitet) {
+    const odgovor = await httpService
+      .post('/' + naziv, entitet)
+      .then(() => {
+        console.log('Unio ' + naziv);
+        return { ok: true, poruka: 'Unio'  + naziv};
+      })
+      .catch((error) => {
+        console.log(error);
+        return { ok: false, poruka: error.response.data };
+      });
+  
+    return odgovor;
+  }
+
+
+  async function getBySifra(sifra) {
+    return await httpService
+      .get('/'+naziv+'/' + sifra)
+      .then((res) => res)
+      .catch((e) => {
+        console.log(e);
+        return { ok: false, poruka: e.response.data };
+      });
+      
+  }
+
+
+  async function promjeni(sifra, entitet) {
+    const odgovor = await httpService
+      .put('/'+naziv+'/' + sifra, entitet)
+      .then(() => {
+        return { ok: true, poruka: 'Promjenio' };
+      })
+      .catch((error) => {
+        return { ok: false, poruka: error.response.data };
+      });
+  
+    return odgovor;
+  }
 
 
 export default{
-    getAutori,
-    obrisiAutora,
-    dodajAutora,
-    promjeniAutora,
-    getBySifra
+    get,
+    obrisi,
+    dodaj,
+    getBySifra,
+    promjeni
 };
