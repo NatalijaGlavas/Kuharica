@@ -31,7 +31,7 @@ function NavBar() {
                 Autori
               </NavDropdown.Item>
               <NavDropdown.Item 
-              // onClick={()=>navigate(RoutesNames.RECEPTI_PREGLED)}
+               onClick={()=>navigate(RoutesNames.RECEPTI_PREGLED)}
               >
                 Recepti
               </NavDropdown.Item>
