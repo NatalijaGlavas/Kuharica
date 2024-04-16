@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace App.Models
 {
     /// <summary>
     /// Ovo mi je POCO koji je mapiran na bazu
     /// </summary>
-    public class Recept:Entitet
+    public class Recept : Entitet
     {
         /// <summary>
         /// Naziv u bazi
@@ -16,7 +17,9 @@ namespace App.Models
         /// Autor u bazi
         /// </summary>
         [Required(ErrorMessage = "Naziv obavezno")]
-        public int? Autor { get; set; }
+
+        [ForeignKey("autor")]
+        public Autor? Autor { get; set; }
 
         /// <summary>
         /// Opis u bazi

@@ -7,7 +7,7 @@ namespace App.Models
     /// <summary>
     /// Ovo mi je POCO koji je mapiran na bazu
     /// </summary>
-    public class Autor:Entitet
+    public class Autor : Entitet
     {
         /// <summary>
         /// Ime u bazi

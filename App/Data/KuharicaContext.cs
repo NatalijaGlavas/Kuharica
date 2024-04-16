@@ -1,6 +1,5 @@
 ﻿using App.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Principal;
 
 namespace App.Data
 {
@@ -27,7 +26,13 @@ namespace App.Data
         /// Recepti u bazi
         /// </summary>
         public DbSet<Recept> Recepti { get; set; }
-     
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            // implementacija veze 1:n
+            modelBuilder.Entity<Recept>().HasOne(r => r.Autor);
+
+        }
     }
 }

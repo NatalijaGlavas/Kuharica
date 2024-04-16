@@ -1,21 +1,21 @@
 ﻿using App.Data;
-using App.Extensions;
 using App.Models;
+using App.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class AutorController: ControllerBase
+    public class ReceptController : ControllerBase
     {
         private KuharicaContext _context;
 
-        public AutorController(KuharicaContext context)
+        public ReceptController(KuharicaContext context)
         {
             _context = context;
         }
-
 
         [HttpGet]
         public IActionResult Get()
@@ -26,12 +26,16 @@ namespace App.Controllers
             }
             try
             {
-                var autori = _context.Autori.ToList();
-                if (autori == null || autori.Count == 0)
+                var lista = _context.Recepti
+                    .Include(r => r.Autor)
+                    .ToList();
+
+                if (lista == null || lista.Count == 0)
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(autori.MapAutorReadList());
+
+                return new JsonResult(lista.MapReceptReadList());
             }
             catch (Exception ex)
             {
@@ -40,22 +44,26 @@ namespace App.Controllers
             }
         }
 
+
         [HttpGet]
         [Route("{sifra:int}")]
         public IActionResult GetBySifra(int sifra)
         {
+            // kontrola ukoliko upit nije valjan
             if (!ModelState.IsValid || sifra <= 0)
             {
                 return BadRequest(ModelState);
             }
             try
             {
-                var autor = _context.Autori.Find(sifra);
-                if (autor == null)
+                var p = _context.Recepti
+                    .Include(i => i.Autor)
+                    .FirstOrDefault(x => x.Sifra == sifra);
+                if (p == null)
                 {
-                    return BadRequest("Autor s šifrom " + sifra + " ne postoji");
+                    return new EmptyResult();
                 }
-                return new JsonResult(autor.MapAutorInsertUpdatedToDTO());
+                return new JsonResult(p.MapReceptInsertUpdatedToDTO());
             }
             catch (Exception ex)
             {
@@ -66,19 +74,28 @@ namespace App.Controllers
 
 
         [HttpPost]
-        public IActionResult Post(AutorDTOInsertUpdate autorDTO)
+        public IActionResult Post(ReceptDTOInsertUpdate dto)
         {
-            if (!ModelState.IsValid || autorDTO == null)
+            if (!ModelState.IsValid || dto == null)
             {
                 return BadRequest();
             }
+
+            var autor = _context.Autori.Find(dto.autorSifra);
+
+            if (autor == null)
+            {
+                return BadRequest();
+            }
+
+            var entitet = dto.MapReceptInsertUpdateFromDTO(new Recept());
+            entitet.Autor = autor;
+
             try
             {
-                var autor = autorDTO.MapAutorInsertUpdateFromDTO(new Autor());
-                _context.Autori.Add(autor);
+                _context.Recepti.Add(entitet);
                 _context.SaveChanges();
-
-                return StatusCode(StatusCodes.Status201Created, autor.MapAutorReadToDTO());
+                return StatusCode(StatusCodes.Status201Created, entitet.MapReceptReadToDTO());
             }
             catch (Exception ex)
             {
@@ -90,27 +107,38 @@ namespace App.Controllers
 
         [HttpPut]
         [Route("{sifra:int}")]
-        public IActionResult Put(int sifra, AutorDTOInsertUpdate autorDTO)
+        public IActionResult Put(int sifra, ReceptDTOInsertUpdate dto)
         {
-            if (sifra <= 0 || !ModelState.IsValid || autorDTO == null)
+            if (sifra <= 0 || !ModelState.IsValid || dto == null)
             {
                 return BadRequest();
             }
             try
             {
-                var autorIzBaze = _context.Autori.Find(sifra);
+                var entitet = _context.Recepti
+                    .Include(i => i.Autor)
+                    .FirstOrDefault(x => x.Sifra == sifra);
 
-                if (autorIzBaze == null)
+                if (entitet == null)
                 {
                     return StatusCode(StatusCodes.Status204NoContent, sifra);
                 }
 
-                var autor = autorDTO.MapAutorInsertUpdateFromDTO(autorIzBaze);
+                var autor = _context.Autori.Find(dto.autorSifra);
 
-                _context.Autori.Update(autor);
+                if (autor == null)
+                {
+                    return BadRequest();
+                }
+
+                entitet = dto.MapReceptInsertUpdateFromDTO(entitet);
+
+                entitet.Autor = autor;
+
+                _context.Recepti.Update(entitet);
                 _context.SaveChanges();
 
-                return StatusCode(StatusCodes.Status200OK, autor.MapAutorReadToDTO());
+                return StatusCode(StatusCodes.Status200OK, entitet.MapReceptReadToDTO());
             }
             catch (Exception ex)
             {
@@ -133,17 +161,17 @@ namespace App.Controllers
 
             try
             {
-                var autorIzBaze = _context.Autori.Find(sifra);
+                var entitetIzBaze = _context.Recepti.Find(sifra);
 
-                if (autorIzBaze == null)
+                if (entitetIzBaze == null)
                 {
                     return StatusCode(StatusCodes.Status204NoContent, sifra);
                 }
 
-                _context.Autori.Remove(autorIzBaze);
+                _context.Recepti.Remove(entitetIzBaze);
                 _context.SaveChanges();
 
-                return new JsonResult("{\"poruka\": \"Obrisano\"}"); // ovo nije baš najbolja praksa ali da znake kako i to može
+                return new JsonResult("{\"poruka\": \"Obrisano\"}");
 
             }
             catch (Exception ex)
