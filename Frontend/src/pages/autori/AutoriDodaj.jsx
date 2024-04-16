@@ -68,7 +68,7 @@ export default function AutoriDodaj() {
         </Form.Group>
 
         <Form.Group className='mb-3' controlId='mjesto'>
-          <Form.Label>MJESTO</Form.Label>
+          <Form.Label>Mjesto</Form.Label>
           <Form.Control
             type='text'
             name='mjesto'
@@ -80,7 +80,7 @@ export default function AutoriDodaj() {
 
 
         <Form.Group className='mb-3' controlId='drzava'>
-          <Form.Label>DRZAVA</Form.Label>
+          <Form.Label>Drzava</Form.Label>
           <Form.Control
             type='text'
             name='drzava'
