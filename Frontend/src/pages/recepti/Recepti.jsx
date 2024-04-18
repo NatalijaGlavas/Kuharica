@@ -37,6 +37,14 @@ export default function Recepti(){
         }
       }
 
+    //   const handleUploading = async (sifra) => {
+    //     try{
+    //         const fileInput = document.createElement("input");
+    //         fileInput.type = "file";
+    //         fileInput.accept = "image/*";
+    //         fileInput.addEventListener("change,")
+    //   }
+
     return (
 
         <Container>
@@ -58,7 +66,7 @@ export default function Recepti(){
                     {recepti && recepti.map((recept,index)=>(
                         <tr key={index}>
                             <td>{recept.naziv}</td>
-                            <td>{recept.autor}</td>
+                            <td>{recept.autorImePrezime}</td>
                             <td>{recept.opis}</td>
                             <td className="sredina">
                                     <Button

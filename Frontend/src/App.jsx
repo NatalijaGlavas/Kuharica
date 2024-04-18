@@ -2,9 +2,11 @@ import { Route, Routes } from "react-router-dom"
 import Pocetna from "./pages/Pocetna"
 import { RoutesNames } from "./constants"
 import NavBar from "./components/NavBar"
+
 import Autori from "./pages/autori/Autori"
 import AutoriDodaj from "./pages/autori/AutoriDodaj"
 import AutoriPromjeni from "./pages/autori/AutoriPromjeni"
+
 import Recepti from "./pages/recepti/Recepti"
 import ReceptiDodaj from "./pages/recepti/ReceptiDodaj"
 import ReceptiPromjeni from "./pages/recepti/ReceptiPromjeni"

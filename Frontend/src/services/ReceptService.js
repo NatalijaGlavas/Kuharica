@@ -61,7 +61,7 @@ async function obrisi(sifra) {
 
   async function promjeni(sifra, entitet) {
     const odgovor = await httpService
-      .put('/'+naziv+'/' + sifra, entitet)
+      .put('/'+ naziv + '/' + sifra, entitet)
       .then(() => {
         return { ok: true, poruka: 'Promjenio' };
       })

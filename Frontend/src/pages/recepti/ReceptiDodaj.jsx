@@ -2,11 +2,15 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { RoutesNames } from '../../constants';
 import ReceptService from '../../services/ReceptService';
+import AutorService from '../../services/AutorService';
+import { useEffect, useState } from 'react';
 
 
 export default function ReceptiDodaj() {
   const navigate = useNavigate();
 
+  const [autori, setAutori] = useState([]);
+  const [autorSifra, setAutorSifra] = useState(0);
 
   async function dodajRecept(Recept) {
     const odgovor = await ReceptService.dodaj(Recept);
@@ -17,6 +21,22 @@ export default function ReceptiDodaj() {
     }
   }
 
+  async function dohvatiAutori(){
+    await AutorService.get().
+      then((o)=>{
+        setAutori(o.data);
+        setAutorSifra(o.data[0].sifra);
+      });
+  }
+
+  async function ucitaj(){
+    await dohvatiAutori();
+  }
+
+  useEffect(()=>{
+    ucitaj();
+  },[]);
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -25,7 +45,7 @@ export default function ReceptiDodaj() {
 
     dodajRecept({
       naziv: podaci.get('naziv'),
-      autor: podaci.get('autor'),
+      autorSifra: parseInt(autorSifra),
       opis: podaci.get('opis')
     });
   }
@@ -46,13 +66,15 @@ export default function ReceptiDodaj() {
 
         <Form.Group className='mb-3' controlId='autor'>
           <Form.Label>Autor</Form.Label>
-          <Form.Control
-            type='text'
-            name='autor'
-            placeholder='Autor'
-            maxLength={255}
-            required
-          />
+          <Form.Select
+          onChange={(e)=>{setAutorSifra(e.target.value)}}
+          >
+          {autori && autori.map((e,index)=>(
+            <option key={index} value={e.sifra}>
+              {e.ime} {e.prezime}
+            </option>
+          ))}
+          </Form.Select>
         </Form.Group>
 
         <Form.Group className='mb-3' controlId='opis'>
@@ -63,20 +85,7 @@ export default function ReceptiDodaj() {
             placeholder='Opis recepta'
             maxLength={255}
           />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='mjesto'>
-          <Form.Label>MJESTO</Form.Label>
-          <Form.Control
-            type='text'
-            name='mjesto'
-            placeholder='Mjesto autora'
-            maxLength={11}
-          />
-        </Form.Group>
-
-
-       
+        </Form.Group>     
 
         <Row>
           <Col>

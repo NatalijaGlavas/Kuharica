@@ -6,7 +6,7 @@ export const RoutesNames = {
 
 
     RECEPTI_PREGLED: '/recepti',
-    RECEPTI_PREGLED_NOVI: '/recepti/dodaj',
+    RECEPTI_NOVI: '/recepti/dodaj',
     RECEPTI_PROMJENI: '/recepti/:sifra',
 
 };
